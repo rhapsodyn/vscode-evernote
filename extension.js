@@ -1,30 +1,60 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-var vscode = require('vscode');
+'use strict'
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-function activate(context) {
+const vscode = require('vscode');
+const adapter = require('./evernote-adapter.js');
+const converter = require('./converter.js');
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "vscode-evernote" is now active!');
+//TODO do sth with canceltoken
+//TODO do sth with catch()
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    var disposable = vscode.commands.registerCommand('extension.sayHello', function () {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
+function openDocWithContent(content) {
+    vscode.workspace.openTextDocument({language: "markdown"}).then(doc => {
+        return vscode.window.showTextDocument(doc);
+    }).then(editor => {
+        let startPos = new vscode.Position(1,0);
+        editor.edit(edit => {
+            let mdContent = converter.toMd(content);
+            edit.insert(startPos, mdContent);
+        });
     });
-
-    context.subscriptions.push(disposable);
 }
-exports.activate = activate;
 
-// this method is called when your extension is deactivated
+function navToOneNote() {
+    let notebooks, noteMetas;
+    
+    adapter.listNoteBooks().then(allNotebooks => {
+        notebooks = allNotebooks;
+        let allNoteBookNames = allNotebooks.map(notebook => notebook.name);
+        
+        return vscode.window.showQuickPick(allNoteBookNames);
+        
+    }).then(selected => {
+        let selectedGuid = notebooks.find(notebook => notebook.name === selected).guid;
+        return adapter.listAllNoteMetas(selectedGuid);
+        
+    }).then(metaList => {
+        noteMetas = metaList.notes;
+        let allNoteTitles = noteMetas.map(noteMeta => noteMeta.title);
+        
+        return vscode.window.showQuickPick(allNoteTitles);
+        
+    }).then(selected => {
+        let selectedGuid = noteMetas.find(meta => meta.title === selected).guid;
+        return adapter.getNoteContent(selectedGuid);
+        
+    }).then(openDocWithContent);
+}
+
+function activate(context) {
+    console.log('Congratulations, your extension "vscode-evernote" is now active!');
+    
+    let navToOneNoteCmd = vscode.commands.registerCommand('extension.navToOneNote', navToOneNote);
+    
+    context.subscriptions.push(navToOneNoteCmd);
+}
+
 function deactivate() {
 }
+
+exports.activate = activate;
 exports.deactivate = deactivate;
