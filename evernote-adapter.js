@@ -21,11 +21,12 @@ function getNoteContent(noteGuid) {
 }
 
 function updateNoteContent(guid, title, content) {
-    
+    return noteStore.updateNote({guid, title, content});
 }
 
 module.exports = {
     listNoteBooks,
     listAllNoteMetas,
-    getNoteContent
+    getNoteContent,
+    updateNoteContent
 };

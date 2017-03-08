@@ -34,11 +34,12 @@ function toHtml(markdown) {
 
 function toEnml(content) {
     let enml = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd"><en-note style=";">';
+
     enml += '<!--' + MAGIC_SPELL;
-    enml += new Buffer(content, 'uft-8').toString('base64');
+    enml += new Buffer(content, 'utf-8').toString('base64');
     enml += MAGIC_SPELL + '-->';
 
-    enml += content;
+    enml += toHtml(content);
 
     enml += '</en-note>';
 

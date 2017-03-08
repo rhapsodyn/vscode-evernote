@@ -3,16 +3,18 @@
 const vscode = require('vscode');
 const adapter = require('./evernote-adapter.js');
 const converter = require('./converter.js');
-const EvernoteContentProvider = require('./evernote-content-provider');
+// const EvernoteContentProvider = require('./evernote-content-provider');
 
 //TODO do sth with canceltoken
 //TODO do sth with catch()
 
+const docToNoteMetas = {};
+
 function openDocWithContent(selectedMeta, content) {
     console.log('note content:' + content);
 
-    var uri = vscode.Uri.parse('evernote://authority/fooo');
-    vscode.workspace.openTextDocument(uri).then(doc => {
+    vscode.workspace.openTextDocument({language: 'markdown'}).then(doc => {
+        docToNoteMetas[doc] = selectedMeta;
         return vscode.window.showTextDocument(doc);
     }).then(editor => {
         let startPos = new vscode.Position(1,0);
@@ -48,22 +50,34 @@ function navToOneNote() {
         selectedMeta = noteMetas.find(meta => meta.title === selected);
         return adapter.getNoteContent(selectedMeta.guid);
         
-    }).then(openDocWithContent.bind(null, selectedMeta));
+    }).then(noteContent => {
+        openDocWithContent(selectedMeta, noteContent);
+    });
 }
 
 function updateNote() {
-    // vscode.window.activeTextEditor.document.getText()    
+    let activeDoc = vscode.window.activeTextEditor.document;
+    let meta = docToNoteMetas[activeDoc];
+
+    if (meta) {
+        // console.log('out: ' + activeDoc.getText());
+        let convertedContent = converter.toEnml(activeDoc.getText());
+        // console.log('converted out:' + convertedContent);
+
+        adapter.updateNoteContent(meta.guid, meta.title, convertedContent).then(note => {
+            console.log('update timestamp: ' + note.updated);
+        });
+    }
 }
 
 function activate(context) {
     let navToOneNoteCmd = vscode.commands.registerCommand('extension.navToOneNote', navToOneNote);
     let updateNoteCmd = vscode.commands.registerCommand('extension.updateNote', updateNote);
-
-    let customProvider = vscode.workspace.registerTextDocumentContentProvider('evernote', new EvernoteContentProvider());
+    // let customProvider = vscode.workspace.registerTextDocumentContentProvider('evernote', new EvernoteContentProvider());
     
     context.subscriptions.push(navToOneNoteCmd);
     context.subscriptions.push(updateNoteCmd);
-    context.subscriptions.push(customProvider);
+    // context.subscriptions.push(customProvider);
 }
 
 function deactivate() {
