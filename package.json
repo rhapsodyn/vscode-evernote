@@ -19,6 +19,10 @@
       {
         "command": "extension.navToOneNote",
         "title": "Evernote: Open Note"
+      },
+      {
+        "command": "extension.updateNote",
+        "title": "Evernote: Update Note"
       }
     ]
   },

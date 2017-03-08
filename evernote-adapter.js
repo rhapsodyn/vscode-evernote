@@ -20,6 +20,10 @@ function getNoteContent(noteGuid) {
     return noteStore.getNoteContent(noteGuid);
 }
 
+function updateNoteContent(guid, title, content) {
+    
+}
+
 module.exports = {
     listNoteBooks,
     listAllNoteMetas,
