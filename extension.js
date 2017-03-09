@@ -62,10 +62,13 @@ function updateNote() {
     if (meta) {
         // console.log('out: ' + activeDoc.getText());
         let convertedContent = converter.toEnml(activeDoc.getText());
-        // console.log('converted out:' + convertedContent);
+        console.log('converted out:' + convertedContent);
 
         adapter.updateNoteContent(meta.guid, meta.title, convertedContent).then(note => {
-            console.log('update timestamp: ' + note.updated);
+            // console.log('update timestamp: ' + note.updated);
+            vscode.window.showInformationMessage('Note updated at: ' + new Date(note.updated));
+        }).catch(reason => {
+            vscode.window.showErrorMessage('Note update failed: ' + JSON.stringify(reason));
         });
     }
 }
