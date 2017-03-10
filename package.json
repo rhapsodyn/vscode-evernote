@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.navToOneNote"
+    "onCommand:extension.navToOneNote",
+    "onCommand:extension.openDevPage"
   ],
   "main": "./extension",
   "contributes": {
@@ -23,8 +24,28 @@
       {
         "command": "extension.updateNote",
         "title": "Evernote: Update Note"
+      },
+      {
+        "command": "extension.openDevPage",
+        "title": "Evernote: Open Developer Page"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Evernote Configuration",
+      "type": "object",
+      "properties": {
+        "evernote.token": {
+          "type": "string",
+          "default": "",
+          "description": "Copy your Developer Token from the website. (Everntoe: Open Developer Page)"
+        },
+        "evernote.noteStoreUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Copy your NoteStore URL from the website. (Evernote: Open Developer Page)"
+        }
+      }
+    }
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -41,6 +62,7 @@
   "dependencies": {
     "evernote": "^2.0.1-beta",
     "marked": "^0.3.6",
+    "open": "0.0.5",
     "to-markdown": "^3.0.3"
   }
 }

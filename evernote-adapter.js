@@ -1,14 +1,22 @@
 'use strict'
 
 const Evernote = require('evernote');
-const temp = require('./debug-token.js');
+const vscode = require('vscode');
+let config = null;
+// try {
+//     config = require('./debug-token.js');
+// } catch (err) {
+    config = vscode.workspace.getConfiguration("evernote");
+    console.log(JSON.stringify(config));
+// }
+
 const MAX_QUERY_COUNT = 99; //TODO only get 99 notes of a notebook
 
 var client, noteStore;
 
 function listNoteBooks() {
-    client = new Evernote.Client({token: temp.token});
-    noteStore = client.getNoteStore(temp.noteStoreUrl);
+    client = new Evernote.Client({token: config.token});
+    noteStore = client.getNoteStore(config.noteStoreUrl);
     return noteStore.listNotebooks();
 }
 
