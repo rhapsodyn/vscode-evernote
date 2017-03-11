@@ -6,6 +6,7 @@
       "type": "git",
       "url": "https://github.com/rhapsodyn/vscode-evernote.git"
   },
+  "icon": "images/evernote.png",
   "homepage": "https://github.com/rhapsodyn/vscode-evernote",
   "version": "0.0.1",
   "publisher": "rhapsodyn",
