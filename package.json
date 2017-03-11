@@ -1,7 +1,12 @@
 {
   "name": "vscode-evernote",
   "displayName": "vscode-evernote",
-  "description": "open & update your evernote in markdown",
+  "description": "Open & update your evernote in markdown",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/rhapsodyn/vscode-evernote.git"
+  },
+  "homepage": "https://github.com/rhapsodyn/vscode-evernote",
   "version": "0.0.1",
   "publisher": "rhapsodyn",
   "engines": {
