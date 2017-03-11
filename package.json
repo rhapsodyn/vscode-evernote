@@ -1,6 +1,6 @@
 {
   "name": "vscode-evernote",
-  "displayName": "vscode-evernote",
+  "displayName": "Evernote",
   "description": "Open & update your evernote in markdown",
   "repository": {
       "type": "git",
