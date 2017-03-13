@@ -1,18 +1,33 @@
-'use strict'
-
-const vscode = require('vscode');
-const adapter = require('./evernote-adapter.js');
-const converter = require('./converter.js');
-const open = require('open');
-// const EvernoteContentProvider = require('./evernote-content-provider');
-
 //TODO do sth with canceltoken
 //TODO do sth with catch()
+//TODO notebook list & note list need pagination
+//TODO see more about activation Commands
+
+'use strict'
+
+const util = require('util');
+const vscode = require('vscode');
+const open = require('open');
+const adapter = require('./evernote-adapter.js');
+const converter = require('./converter.js');
+
+const config = vscode.workspace.getConfiguration('evernote');
+// const userSettingUri = vscode.Uri.parse('%APPDATA%\Code\User\settings.json'); URI malformed :(
 
 const docToNoteMetas = {};
 
 function showError(error) {
-    vscode.window.showErrorMessage('Error: ' + error);
+    console.log(error);
+    let errMsg;
+    if (error.statusCode && error.statusMessage) {
+        errMsg = util.format("Http Error: %s - %s (Wrong noteStoreUrl??)", error.statusCode, error.statusMessage);
+    } else if (error.errorCode && error.parameter) {
+        errMsg = util.format("Evernote Error: %s - %s", error.errorCode, error.parameter);
+    } else {
+        errMsg = "Unexpected Error: " + error.toString();
+    }
+    
+    vscode.window.showErrorMessage(errMsg);
 }
 
 function openDocWithContent(selectedMeta, content) {
@@ -27,11 +42,15 @@ function openDocWithContent(selectedMeta, content) {
             let mdContent = converter.toMd(content);
             edit.insert(startPos, mdContent);
         });
-    });
+    }).catch(showError);
 }
 
 function navToOneNote() {
-    console.log('nav to one');
+    if (!config.noteStoreUrl || !config.token) {
+        vscode.window.showInformationMessage('Check readme for details.')
+        vscode.window.showWarningMessage("Please set the token & API url first");
+        return;
+    }    
     
     let notebooks, noteMetas, selectedMeta;
     
@@ -71,7 +90,7 @@ function updateNote() {
         
         adapter.updateNoteContent(meta.guid, meta.title, convertedContent).then(note => {
             // console.log('update timestamp: ' + note.updated);
-            vscode.window.showInformationMessage('Note updated at: ' + new Date(note.updated));
+            vscode.window.showInformationMessage('Note:' + note.title +' updated at: ' + new Date(note.updated));
         }).catch(showError);
     }
 }
@@ -95,12 +114,10 @@ function activate(context) {
     let navToOneNoteCmd = vscode.commands.registerCommand('extension.navToOneNote', navToOneNote);
     let updateNoteCmd = vscode.commands.registerCommand('extension.updateNote', updateNote);
     let openDevPageCmd = vscode.commands.registerCommand('extension.openDevPage', openDevPage);
-    // let customProvider = vscode.workspace.registerTextDocumentContentProvider('evernote', new EvernoteContentProvider());
     
     context.subscriptions.push(navToOneNoteCmd);
     context.subscriptions.push(updateNoteCmd);
     context.subscriptions.push(openDevPageCmd);
-    // context.subscriptions.push(customProvider);
 }
 
 function deactivate() {

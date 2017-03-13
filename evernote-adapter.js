@@ -2,13 +2,7 @@
 
 const Evernote = require('evernote');
 const vscode = require('vscode');
-let config = null;
-// try {
-//     config = require('./debug-token.js');
-// } catch (err) {
-    config = vscode.workspace.getConfiguration("evernote");
-    console.log(JSON.stringify(config));
-// }
+const config = vscode.workspace.getConfiguration("evernote");
 
 const MAX_QUERY_COUNT = 99; //TODO only get 99 notes of a notebook
 

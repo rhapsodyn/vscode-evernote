@@ -1,6 +1,6 @@
 ## Features
 
-This extension is much like the [Sublime One](https://packagecontrol.io/packages/Evernote). Just open & update your notes with *MARKDOWN*.
+This extension is much like the [Sublime One](https://packagecontrol.io/packages/Evernote). Just open & update your notes in *MARKDOWN*.
 
 Commands:
 * `Evernote: Open Note`
@@ -13,15 +13,24 @@ You must have an Evernote account :p
 
 ## Extension Settings
 
-This is **IMPORTANT**, you have to set correctly to use this extension.
-Use command `Evernote: Open Developer Page` to help you get token & URL.
+This is **IMPORTANT**, you have to config correctly to use this extension.
 
-* `evernote.token`: your own developer token
-* `evernote.noteStoreUrl`: your own API url
+Use command `Evernote: Open Developer Page` to help you get your token & URL. After enter that command (Or your can visit the page directly - [China](https://app.yinxiang.com/api/DeveloperToken.action) | [Other Countries](https://www.evernote.com/api/DeveloperToken.action)), you should see sth like:
+
+[[https://github.com/rhapsodyn/vscode-evernote/blob/master/images/screenshot.jpg]]
+
+Then open your user setting by `Preferences: Open User Settings`, and copy&paste token info to:
+
+* `evernote.token`: your developer token
+* `evernote.noteStoreUrl`: your API url
 
 ## Known Issues
 
-NULL
+TODOs:
++ Create
++ Delete
++ Todo-type note
++ blahblah
 
 -----------------------------------------------------------------------------------------------------------
 
