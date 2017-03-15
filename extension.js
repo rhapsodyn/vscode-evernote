@@ -15,8 +15,13 @@ const config = vscode.workspace.getConfiguration('evernote');
 // const userSettingUri = vscode.Uri.parse('%APPDATA%\Code\User\settings.json'); URI malformed :(
 
 const docToNoteMetas = {};
+let showTips = config.showTips;
 
 function showError(error) {
+    if (!error) {
+        return; //user dismiss
+    }
+    
     console.log(error);
     let errMsg;
     if (error.statusCode && error.statusMessage) {
@@ -33,7 +38,7 @@ function showError(error) {
 function openDocWithContent(selectedMeta, content) {
     console.log('note content:' + content);
     
-    vscode.workspace.openTextDocument({language: 'markdown'}).then(doc => {
+    return vscode.workspace.openTextDocument({language: 'markdown'}).then(doc => {
         docToNoteMetas[doc] = selectedMeta;
         return vscode.window.showTextDocument(doc);
     }).then(editor => {
@@ -42,7 +47,7 @@ function openDocWithContent(selectedMeta, content) {
             let mdContent = converter.toMd(content);
             edit.insert(startPos, mdContent);
         });
-    }).catch(showError);
+    });
 }
 
 function navToOneNote() {
@@ -61,6 +66,10 @@ function navToOneNote() {
         return vscode.window.showQuickPick(allNoteBookNames);
         
     }).then(selected => {
+        if (!selected) {
+            throw "";
+        }
+        
         let selectedGuid = notebooks.find(notebook => notebook.name === selected).guid;
         return adapter.listAllNoteMetas(selectedGuid);
         
@@ -71,12 +80,18 @@ function navToOneNote() {
         return vscode.window.showQuickPick(allNoteTitles);
         
     }).then(selected => {
+        if (!selected) {
+            throw "";
+        }
+        
         selectedMeta = noteMetas.find(meta => meta.title === selected);
         return adapter.getNoteContent(selectedMeta.guid);
         
     }).then(noteContent => {
-        openDocWithContent(selectedMeta, noteContent);
+        return openDocWithContent(selectedMeta, noteContent);
     }).catch(showError);
+    
+    vscode.window.setStatusBarMessage("Requesting notebooks .....", 2);
 }
 
 function updateNote() {
@@ -101,6 +116,10 @@ function insertNewNote() {
 
 function openDevPage() {
     vscode.window.showQuickPick(["China", "Other"]).then(choice => {
+        if (!choice) {
+            return; // user dismiss
+        }
+        
         if (choice === "China") {
             open("https://app.yinxiang.com/api/DeveloperToken.action");
         } else {
@@ -108,6 +127,20 @@ function openDevPage() {
         }
     });
     
+}
+
+function alertToUpdate() {
+    if (!showTips) {
+        return;
+    }
+    
+    let msg = "Saving to local won't sync the remote. Try Evernote: Update Note";
+    let option = "Ignore";
+    vscode.window.showWarningMessage(msg, option).then(result => {
+        if (result === option) {
+           showTips = false;
+        }
+    });
 }
 
 function activate(context) {
@@ -118,6 +151,9 @@ function activate(context) {
     context.subscriptions.push(navToOneNoteCmd);
     context.subscriptions.push(updateNoteCmd);
     context.subscriptions.push(openDevPageCmd);
+    
+    // vscode.workspace.onWillSaveTextDocument(alertToUpdate);
+    vscode.workspace.onDidSaveTextDocument(alertToUpdate);
 }
 
 function deactivate() {

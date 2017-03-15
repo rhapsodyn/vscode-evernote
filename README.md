@@ -17,7 +17,7 @@ This is **IMPORTANT**, you have to config correctly to use this extension.
 
 Use command `Evernote: Open Developer Page` to help you get your token & URL. After enter that command (Or your can visit the page directly - [China](https://app.yinxiang.com/api/DeveloperToken.action) | [Other Countries](https://www.evernote.com/api/DeveloperToken.action)), you should see sth like (Of course, you have to login):
 
-![screenshot](https://github.com/rhapsodyn/vscode-evernote/blob/master/images/screenshot.jpg)
+![screenshot](images/screenshot.jpg)
 
 Then open your user setting by `Preferences: Open User Settings`, and copy&paste token info to (Search `evernote` to get you there):
 
