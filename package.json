@@ -36,6 +36,20 @@
         "title": "Evernote: Open Developer Page"
       }
     ],
+    "keybindings":[
+			{
+				"command": "extension.navToOneNote",
+				"key": "ctrl+alt+o",
+				"mac": "cmd+alt+o",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "extension.updateNote",
+				"key": "ctrl+alt+s",
+				"mac": "cmd+alt+s",
+				"when": "editorTextFocus && editorLangId == 'markdown'"
+			}
+    ],
     "configuration": {
       "title": "Evernote Configuration",
       "type": "object",

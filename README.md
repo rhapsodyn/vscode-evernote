@@ -24,6 +24,10 @@ Then open your user setting by `Preferences: Open User Settings`, and copy&paste
 * `evernote.token`: your developer token
 * `evernote.noteStoreUrl`: your API url
 
+## Features
+* Open the note list using `Ctrl+Alt+O`
+* Update the note using `Ctrl+Alt+S`
+
 ## Known Issues
 
 TODOs:

@@ -19,3 +19,8 @@ All notable changes to the "vscode-evernote" extension will be documented in thi
 - update README
 - add some warnings for ctrl+s
 - update status at status bar 
+
+## [0.0.6] - 2017-03-16
+### Changed
+- update README
+- add shortcuts ctrl+alt+s and ctrl+alt+o
