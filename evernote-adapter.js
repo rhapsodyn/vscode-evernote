@@ -38,9 +38,23 @@ function updateNoteContent(guid, title, content) {
     return noteStore.updateNote({guid, title, content});
 }
 
+function createNotebook(title) {
+    showStatusBarMsg("Creating notebook: " + title + "......");
+
+    return noteStore.createNotebook({name: title});
+}
+
+function createNote(title, notebookGuid) {
+    showStatusBarMsg("Creating note: " + title + "......");
+
+    return noteStore.createNote({title, notebookGuid});
+}
+
 module.exports = {
     listNoteBooks,
     listAllNoteMetas,
     getNoteContent,
-    updateNoteContent
+    updateNoteContent,
+    createNotebook,
+    createNote
 };

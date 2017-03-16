@@ -1,5 +1,3 @@
-//TODO do sth with canceltoken
-//TODO do sth with catch()
 //TODO notebook list & note list need pagination
 //TODO see more about activation Commands
 
@@ -13,6 +11,7 @@ const converter = require('./converter.js');
 
 const config = vscode.workspace.getConfiguration('evernote');
 // const userSettingUri = vscode.Uri.parse('%APPDATA%\Code\User\settings.json'); URI malformed :(
+const createNotebookOption = "Create New Notebook....", createNoteOption = "Create New Note...."; // hope these not collide with your note & notebook names
 
 const docToNoteMetas = {};
 let showTips = config.showTips;
@@ -23,6 +22,7 @@ function showError(error) {
     }
     
     console.log(error);
+    
     let errMsg;
     if (error.statusCode && error.statusMessage) {
         errMsg = util.format("Http Error: %s - %s (Wrong noteStoreUrl??)", error.statusCode, error.statusMessage);
@@ -57,11 +57,11 @@ function navToOneNote() {
         return;
     }    
     
-    let notebooks, noteMetas, selectedMeta;
+    let notebooks, selectedNotebook, noteMetas, selectedNoteMeta;
     
     adapter.listNoteBooks().then(allNotebooks => {
         notebooks = allNotebooks;
-        let allNoteBookNames = allNotebooks.map(notebook => notebook.name);
+        let allNoteBookNames = allNotebooks.map(notebook => notebook.name).concat(createNotebookOption);
         
         return vscode.window.showQuickPick(allNoteBookNames);
         
@@ -70,12 +70,17 @@ function navToOneNote() {
             throw "";
         }
         
-        let selectedGuid = notebooks.find(notebook => notebook.name === selected).guid;
-        return adapter.listAllNoteMetas(selectedGuid);
+        if (selected === createNotebookOption) {
+            insertNewNotebook();
+            throw "";
+        }
+        
+        selectedNotebook = notebooks.find(notebook => notebook.name === selected);
+        return adapter.listAllNoteMetas(selectedNotebook.guid);
         
     }).then(metaList => {
         noteMetas = metaList.notes;
-        let allNoteTitles = noteMetas.map(noteMeta => noteMeta.title);
+        let allNoteTitles = noteMetas.map(noteMeta => noteMeta.title).concat(createNoteOption);
         
         return vscode.window.showQuickPick(allNoteTitles);
         
@@ -83,12 +88,16 @@ function navToOneNote() {
         if (!selected) {
             throw "";
         }
+
+        if (selected === createNoteOption) {
+            insertNewNote(selectedNotebook.guid);
+        }
         
-        selectedMeta = noteMetas.find(meta => meta.title === selected);
-        return adapter.getNoteContent(selectedMeta.guid);
+        selectedNoteMeta = noteMetas.find(meta => meta.title === selected);
+        return adapter.getNoteContent(selectedNoteMeta.guid);
         
     }).then(noteContent => {
-        return openDocWithContent(selectedMeta, noteContent);
+        return openDocWithContent(selectedNoteMeta, noteContent);
     }).catch(showError);
     
     vscode.window.setStatusBarMessage("Requesting notebooks .....", 2);
@@ -99,19 +108,33 @@ function updateNote() {
     let meta = docToNoteMetas[activeDoc];
     
     if (meta) {
-        // console.log('out: ' + activeDoc.getText());
         let convertedContent = converter.toEnml(activeDoc.getText());
         console.log('converted out:' + convertedContent);
         
         adapter.updateNoteContent(meta.guid, meta.title, convertedContent).then(note => {
-            // console.log('update timestamp: ' + note.updated);
             vscode.window.showInformationMessage('Note:' + note.title +' updated at: ' + new Date(note.updated));
         }).catch(showError);
     }
 }
 
-function insertNewNote() {
-    throw "notimplemented";
+function insertNewNotebook() {
+    vscode.window.showInputBox({placeHolder: "Notebook Name"}).then(result => {
+        if (result) {
+            adapter.createNotebook(result).then(notebook => {
+                vscode.window.showInformationMessage('Notebook: ' + notebook.name + ' created at: ' + new Date(notebook.serviceCreated));
+            }).catch(showError);
+        };
+    });
+}
+
+function insertNewNote(notebookGuid) {
+    vscode.window.showInputBox({placeHolder: "Note Title"}).then(result => {
+        if (result) {
+            adapter.createNote(result, notebookGuid).then(note => {
+                vscode.window.showInformationMessage('Note:' + note.title +' updated at: ' + new Date(note.updated));
+            }).catch(showError);
+        }
+    });
 }
 
 function openDevPage() {
@@ -138,7 +161,7 @@ function alertToUpdate() {
     let option = "Ignore";
     vscode.window.showWarningMessage(msg, option).then(result => {
         if (result === option) {
-           showTips = false;
+            showTips = false;
         }
     });
 }

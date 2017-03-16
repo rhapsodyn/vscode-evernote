@@ -27,7 +27,7 @@ Then open your user setting by `Preferences: Open User Settings`, and copy&paste
 ## Known Issues
 
 TODOs:
-+ Create
++ <del>Create</del>
 + Delete
 + Todo-type note
 + blahblah
