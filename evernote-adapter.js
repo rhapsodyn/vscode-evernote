@@ -8,8 +8,9 @@ const MAX_QUERY_COUNT = 20; //TODO only get 20 of a notebook
 
 let client, noteStore;
 
+//TODO should be hide by callback, BUT
 function showStatusBarMsg(msg) {
-    vscode.window.setStatusBarMessage(msg, 1000);
+    vscode.window.setStatusBarMessage(msg, 2000);
 }
 
 function listNoteBooks() {
