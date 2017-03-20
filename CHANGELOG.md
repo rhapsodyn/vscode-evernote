@@ -1,8 +1,6 @@
 # Change Log
 All notable changes to the "vscode-evernote" extension will be documented in this file.
 
-[Keep a Changelog](http://keepachangelog.com/).
-
 ## [Unreleased]
 - Initial release
 
@@ -19,3 +17,8 @@ All notable changes to the "vscode-evernote" extension will be documented in thi
 - update README
 - add some warnings for ctrl+s
 - update status at status bar 
+
+## [0.1.0] - 2017-03-20
+### Added
+- create notebook
+- create note

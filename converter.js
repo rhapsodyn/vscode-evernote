@@ -14,6 +14,10 @@ customRenderer.heading = (text, level) => {
 };
 
 function toMd(enml) {
+    if (!enml) {
+        return "";
+    }
+
     let beginTagIndex = enml.indexOf('<en-note'); //<en-node style="blahblah">
     let startIndex = enml.indexOf('>', beginTagIndex) + 1;
     let endIndex = enml.indexOf('</en-note>');

@@ -1,5 +1,7 @@
-//TODO notebook list & note list need pagination
+//TODO notebook list & note list need pagination; or maybe search????
+//TODO delete
 //TODO see more about activation Commands
+//TODO can not open new doc with title; maybe commented headers in doc ??
 
 'use strict'
 
@@ -9,8 +11,8 @@ const open = require('open');
 const adapter = require('./evernote-adapter.js');
 const converter = require('./converter.js');
 
-const config = vscode.workspace.getConfiguration('evernote');
 // const userSettingUri = vscode.Uri.parse('%APPDATA%\Code\User\settings.json'); URI malformed :(
+const config = vscode.workspace.getConfiguration('evernote');
 const createNotebookOption = "Create New Notebook....", createNoteOption = "Create New Note...."; // hope these not collide with your note & notebook names
 
 const docToNoteMetas = {};
@@ -91,6 +93,7 @@ function navToOneNote() {
 
         if (selected === createNoteOption) {
             insertNewNote(selectedNotebook.guid);
+            throw "";
         }
         
         selectedNoteMeta = noteMetas.find(meta => meta.title === selected);
@@ -131,7 +134,10 @@ function insertNewNote(notebookGuid) {
     vscode.window.showInputBox({placeHolder: "Note Title"}).then(result => {
         if (result) {
             adapter.createNote(result, notebookGuid).then(note => {
-                vscode.window.showInformationMessage('Note:' + note.title +' updated at: ' + new Date(note.updated));
+                vscode.window.showInformationMessage('Note:' + note.title +' created at: ' + new Date(note.updated));
+
+                //note includes notemeta
+                return openDocWithContent(note, note.content);
             }).catch(showError);
         }
     });

@@ -4,7 +4,7 @@ const Evernote = require('evernote');
 const vscode = require('vscode');
 const config = vscode.workspace.getConfiguration("evernote");
 
-const MAX_QUERY_COUNT = 99; //TODO only get 99 notes of a notebook
+const MAX_QUERY_COUNT = 20; //TODO only get 20 of a notebook
 
 let client, noteStore;
 
