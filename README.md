@@ -30,6 +30,7 @@ TODOs:
 + <del>Create</del>
 + Delete
 + Todo-type note
++ media-type support
 + blahblah
 
 -----------------------------------------------------------------------------------------------------------
