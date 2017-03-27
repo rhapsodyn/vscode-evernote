@@ -12,12 +12,23 @@ customRenderer.heading = (text, level) => {
     + text
     + '</h' + level + '>\n';
 };
+customRenderer.listitem = function(text) {
+    if (/^\s*\[[x ]\]\s*/.test(text)) {
+        text = text
+        .replace(/^\s*\[ \]\s*/, '<en-todo/>')
+        .replace(/^\s*\[x\]\s*/, '<en-todo checked="true"/> ');
+        // return '<li style="list-style: none">' + text + '</li>';
+        return '<li>' + text + '</li>';
+    } else {
+        return '<li>' + text + '</li>';
+    }
+};
 
 function toMd(enml) {
     if (!enml) {
         return "";
     }
-
+    
     let beginTagIndex = enml.indexOf('<en-note'); //<en-node style="blahblah">
     let startIndex = enml.indexOf('>', beginTagIndex) + 1;
     let endIndex = enml.indexOf('</en-note>');

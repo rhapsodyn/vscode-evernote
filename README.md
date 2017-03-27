@@ -26,6 +26,8 @@ Then open your user setting by `Preferences: Open User Settings`, and copy&paste
 
 ## Known Issues
 
+**Confliction while both editing in Evernote & This extension.**
+
 TODOs:
 + <del>Create</del>
 + Delete
