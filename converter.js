@@ -12,6 +12,7 @@ customRenderer.heading = (text, level) => {
     + text
     + '</h' + level + '>\n';
 };
+//handle the todos
 customRenderer.listitem = function(text) {
     if (/^\s*\[[x ]\]\s*/.test(text)) {
         text = text
@@ -42,16 +43,27 @@ function toMd(enml) {
         let endMagicIdx = rawContent.indexOf(MAGIC_SPELL + '-->');
         let magicString = rawContent.substring(beginMagicIdx, endMagicIdx);
         
-        console.log('magicString: ' + magicString);
+        // let htmlStr = rawContent.substring(endMagicIdx + (MAGIC_SPELL + '-->').length);
+        // console.log('magicString: ' + magicString);
+        // console.log('htmlStr: ' + htmlStr);
         
         let base64content = new Buffer(magicString, 'base64');
         return base64content.toString('utf-8');
-    } else { //made in elsewhere
+    } else { //made || touched in elsewhere
         
         let commentRegex = /<!--.*?-->/;
         let htmlStr = rawContent.replace(commentRegex, '');
-        return toMarkdown(htmlStr);
+        let md = toMarkdown(htmlStr); //TODO with todo 
+
+        return processTodo(md);
     }
+}
+
+function processTodo(md) {
+    return md.replace(/<en-todo\s+checked="true"\s*\/?>/g, '[x] ')
+             .replace(/<en-todo\s+checked="false"\s*\/?>/g, '[ ] ')
+             .replace(/<en-todo\s*\/?>/g, '[ ] ')
+             .replace(/<\/en-todo>/g,'');
 }
 
 function toHtml(markdown) {
