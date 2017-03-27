@@ -30,9 +30,11 @@ Then open your user setting by `Preferences: Open User Settings`, and copy&paste
 
 TODOs:
 + <del>Create</del>
++ Pagination on notes & notebooks
 + Delete
 + Todo-type note
-+ media-type support
++ Media-type support
++ Tag-thing
 + blahblah
 
 -----------------------------------------------------------------------------------------------------------
