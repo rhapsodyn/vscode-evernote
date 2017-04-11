@@ -37,7 +37,7 @@ function showError(error) {
     vscode.window.showErrorMessage(errMsg);
 }
 
-function openDocWithContent(selectedMeta, content) {
+function openDocWithContent(selectedNotebook, selectedMeta, content) {
     console.log('note content:' + content);
     
     return vscode.workspace.openTextDocument({language: 'markdown'}).then(doc => {
@@ -47,7 +47,9 @@ function openDocWithContent(selectedMeta, content) {
         let startPos = new vscode.Position(1,0);
         editor.edit(edit => {
             let mdContent = converter.toMd(content);
-            edit.insert(startPos, mdContent);
+            let metaCommentContent = converter.metaToComment(selectedMeta, selectedNotebook.name);
+            
+            edit.insert(startPos, metaCommentContent + mdContent);
         });
     });
 }
@@ -90,7 +92,7 @@ function navToOneNote() {
         if (!selected) {
             throw "";
         }
-
+        
         if (selected === createNoteOption) {
             insertNewNote(selectedNotebook.guid);
             throw "";
@@ -100,7 +102,8 @@ function navToOneNote() {
         return adapter.getNoteContent(selectedNoteMeta.guid);
         
     }).then(noteContent => {
-        return openDocWithContent(selectedNoteMeta, noteContent);
+        return openDocWithContent(selectedNotebook, selectedNoteMeta, noteContent);
+        
     }).catch(showError);
     
     vscode.window.setStatusBarMessage("Requesting notebooks .....", 2);
@@ -111,7 +114,8 @@ function updateNote() {
     let meta = docToNoteMetas[activeDoc];
     
     if (meta) {
-        let convertedContent = converter.toEnml(activeDoc.getText());
+        let rawText = activeDoc.getText();
+        let convertedContent = converter.toEnml(rawText);
         console.log('converted out:' + convertedContent);
         
         adapter.updateNoteContent(meta.guid, meta.title, convertedContent).then(note => {
@@ -135,7 +139,7 @@ function insertNewNote(notebookGuid) {
         if (result) {
             adapter.createNote(result, notebookGuid).then(note => {
                 vscode.window.showInformationMessage('Note:' + note.title +' created at: ' + new Date(note.updated));
-
+                
                 //note includes notemeta
                 return openDocWithContent(note, note.content);
             }).catch(showError);

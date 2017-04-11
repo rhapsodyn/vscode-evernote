@@ -2,6 +2,7 @@
 //pass ENML to md, and back
 
 // const xml2js = require('xml2js');
+const util = require('util');
 const toMarkdown = require('to-markdown');
 const marked = require('marked');
 const MAGIC_SPELL = "%VSCODE_EVERNOTE%";
@@ -43,17 +44,13 @@ function toMd(enml) {
         let endMagicIdx = rawContent.indexOf(MAGIC_SPELL + '-->');
         let magicString = rawContent.substring(beginMagicIdx, endMagicIdx);
         
-        // let htmlStr = rawContent.substring(endMagicIdx + (MAGIC_SPELL + '-->').length);
-        // console.log('magicString: ' + magicString);
-        // console.log('htmlStr: ' + htmlStr);
-        
         let base64content = new Buffer(magicString, 'base64');
         return base64content.toString('utf-8');
     } else { //made || touched in elsewhere
         
         let commentRegex = /<!--.*?-->/;
         let htmlStr = rawContent.replace(commentRegex, '');
-        let md = toMarkdown(htmlStr); //TODO with todo 
+        let md = toMarkdown(htmlStr); 
 
         return processTodo(md);
     }
@@ -84,5 +81,17 @@ function toEnml(content) {
     return enml;
 }
 
+const tmpl = '<!--\ntitle:%s\ntags:%s\nnotebook:%s\n-->\n\n';
+
+function metaToComment(noteMeta, notebookName) {
+    return util.format(tmpl, noteMeta.title, 'foo', notebookName);
+}
+
+function commentToMeta(commentStr) {
+    
+}
+
 exports.toMd = toMd;
 exports.toEnml = toEnml;
+exports.metaToComment = metaToComment;
+exports.commentToMeta = commentToMeta;

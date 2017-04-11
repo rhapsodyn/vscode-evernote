@@ -32,7 +32,8 @@ TODOs:
 + <del>Create</del>
 + Pagination on notes & notebooks
 + Delete
-+ Todo-type note
++ <del>Todo-type note</del>
++ Reminder
 + Media-type support
 + Tag-thing
 + blahblah

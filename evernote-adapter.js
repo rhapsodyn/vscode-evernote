@@ -24,7 +24,7 @@ function listNoteBooks() {
 function listAllNoteMetas(notebookGuid) {
     showStatusBarMsg("Requesting all note metas......");
     
-    return noteStore.findNotesMetadata({notebookGuid}, 0, MAX_QUERY_COUNT, {includeTitle: true});
+    return noteStore.findNotesMetadata({notebookGuid}, 0, MAX_QUERY_COUNT, {includeTitle: true, includeTagGuids: true});
 }
 
 function getNoteContent(noteGuid) {
