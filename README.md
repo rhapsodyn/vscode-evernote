@@ -1,8 +1,17 @@
+# SAD FACE
+
+From Evernote developer site:
+
+> Update: the creation of developer tokens is temporarily disabled.
+
+Which means: **this extension does not work anymore for new users.**
+
 ## Features
 
-This extension is much like the [Sublime One](https://packagecontrol.io/packages/Evernote). Just open & update your notes in *MARKDOWN*.
+This extension is much like the [Sublime One](https://packagecontrol.io/packages/Evernote). Just open & update your notes in _MARKDOWN_.
 
 Commands:
+
 * `Evernote: Open Note`
 * `Evernote: Update Note`
 * `Evernote: Open Developer Page`
@@ -29,15 +38,16 @@ Then open your user setting by `Preferences: Open User Settings`, and copy&paste
 **Confliction while both editing in Evernote & This extension.**
 
 TODOs:
-+ <del>Create</del>
-+ Pagination on notes & notebooks
-+ Delete
-+ <del>Todo-type note</del>
-+ Reminder
-+ Media-type support
-+ Tag-thing
-+ blahblah
 
------------------------------------------------------------------------------------------------------------
+* <del>Create</del>
+* Pagination on notes & notebooks
+* Delete
+* <del>Todo-type note</del>
+* Reminder
+* Media-type support
+* Tag-thing
+* blahblah
+
+---
 
 **Enjoy!**
