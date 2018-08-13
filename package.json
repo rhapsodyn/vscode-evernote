@@ -3,8 +3,8 @@
   "displayName": "Evernote",
   "description": "Open & update your evernote in markdown",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/rhapsodyn/vscode-evernote.git"
+    "type": "git",
+    "url": "https://github.com/rhapsodyn/vscode-evernote.git"
   },
   "icon": "images/evernote.png",
   "homepage": "https://github.com/rhapsodyn/vscode-evernote",
@@ -71,7 +71,7 @@
     "@types/mocha": "^2.2.32"
   },
   "dependencies": {
-    "evernote": "^2.0.1-beta",
+    "evernote": "^2.0.5",
     "marked": "^0.3.6",
     "open": "0.0.5",
     "to-markdown": "^3.0.3"
